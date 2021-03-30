@@ -1,51 +1,66 @@
+#Importation des dépendances
+import display_menu
+import time
+import subprocess 
+import netifaces as ni
+import socket
+import sys
+from datetime import datetime
+import os
+
+##########################################################################################################
 
 #Fonction pour scan le réseau (IP)
 def scan_network_utility():
-
-    #Importation des dépendances
-    import subprocess 
-    import netifaces as ni
-    import socket
 
     #Creation du socket + utilisation du dns de google pour determiner mon ip et on la récupère dans une variable 
     monip = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     monip.connect(("8.8.8.8", 80))
     monip = monip.getsockname()[0]
 
-    #Affichage de l'IP
+    #On affiche l'IP du PC
     print("Votre ip est :")
     print(monip)
+    print("         ")
+    
+    #On récupère les 3 premiers octets de l'adresse IP
+    monipexplode= monip.split('.')[0]+"."+monip.split('.')[1]+"."+monip.split('.')[2]+"."
 
-    #On demande quel réseau analyser
-    network_to_scan = input("Quel réseau voulez vous analyser ? Saisir les 3 premiers octets uniquement : ")
 
     #On fait un try pour vérifier le bon fonctionnement
     try:
 
-        #On récupère la variable saisie, on y ajoute un "." + segment 1 à 254 et on essaye chaque combinaison entre 1 et 254
-        for ping in range(1,254): 
-            address = network_to_scan + "." + str(ping) 
+        #On initialise une variable qui va passer de 1 à 254 à chaque saut
+        for ping in range(1,254):
+
+            #On défini la variable contenant les 3 premiers octets et on y incrémente la variable ping allant de 1 à 254
+            address = monipexplode + str(ping)
+
+            #On effectue le test avec la commande ping
             res = subprocess.call(['ping', '-c', '3', address])
 
-            #Si la fonction trouve une IP, on l'affiche
-            if res == 0: 
+            #Si la fonction trouve une IP (0=ok), on l'affiche ainsi que son nom d'hôte
+            if res == 0:
+                
+                print( "------------------------")
                 print( "IP trouvée : ", address)
+                hostname=os.popen('dig -x '+address+' +short')
+                print( "Nom d'hôte : ", hostname.read())
+                print( "        ")
 
-    #Si on presse Ctrl - C pour couper la fonctio nen cours, on affiche un message d'erreur       
+    #Si on presse Ctrl - C pour couper la fonction en cours, on affiche un message d'erreur       
     except KeyboardInterrupt: 
-            print("\n Programme interrompu!") 
-            sys.exit() 
+            print("\n Programme interrompu!")
 
-#Fonction pour scan les ports d'une IP
+    #On affiche le menu à la fin de la fonction
+    display_menu.menu()
+
+##########################################################################################################
+
+#Fonction pour scan les ports d'une adresse IP
 def scan_ports_utility():
 
-    #Importation des dépendances
-    import subprocess
-    import sys
-    import socket
-    from datetime import datetime 
-
-    #On demande l'adresse ip à scanner
+    #On demande l'adresse ip à scanner et l'initialise dans une variable
     ip_to_check=input("Veuillez saisir l'adresse IP à scanner : ")
     
     # Bannière affichant l'IP à scanner + la date/heure
@@ -57,8 +72,10 @@ def scan_ports_utility():
     #On fait un try pour vérifier le bon fonctionnement 
     try: 
           
-        # On scan les ports de 1 à 65536
-        for port in range(1,65535): 
+        # On initialise une variable qui va passer de 1 à 65536
+        for port in range(1,65535):
+
+            #Creation du socket de connexion
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
             socket.setdefaulttimeout(1) 
               
@@ -70,50 +87,35 @@ def scan_ports_utility():
             
     #Si on presse Ctrl - C pour couper la fonctio nen cours, on affiche un message d'erreur       
     except KeyboardInterrupt: 
-            print("\n Programme interrompu!") 
-            sys.exit() 
+            print("\n Programme interrompu!")
 
+    #On affiche le menu à la fin de la fonction
+    display_menu.menu()
+
+##########################################################################################################
 
 #Fonction pour établir une connexion ssh
 def connexion_ssh_utility():
 
-    #Importation des dépendances
-    import paramiko
 
     #On récupère les informations necessaires pour la connexion SSH
     ip=input("Veuillez saisir l'IP à laquelle se connecter : ")
     user=input("Veuillez saisir le nom d'utilisateur : ")
-    passwd=input("Veuillez saisir le mot de passe : ")
 
-    #initialisation de la connexion
-    client = paramiko.SSHClient()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    #On affiche un message d'avertissement à l'utilisateur en mettant 3 seconde de délai
+    print("Vous allez basculer vers le terminal, merci de saisir le mot de passe et de saisir vos commandes en ssh")
+    time.sleep(3)
+    
+    #On lance un terminal en ajoutant la commande ssh utilissateur@ip
+    os.system("gnome-terminal -x ssh "+user+"@"+ip+"")
 
-    #Si le client se connecte avec les paramètres, on initilise la connexion et on affiche que la connexion est établie
-    if (client.connect(hostname=ip, username=user, password=passwd, timeout=4)) == 0:
-        print("Connexion établie")
+    #On affiche le menu à la fin de la fonction
+    display_menu.menu()
 
-    #Sinon on affiche un message d'erreur
-    else:
-        print("Echec de la connexion")
-        
-
-#Fonction pour installer et ouvrir Wireshark
-def wireshark_utility():
-
-    #Importation des dépendances
-    import os
-
-    #On demande le mot de passe SuperUser
-    os.system("apt-get install -y wireshark >sortie.log") ###miss
-    os.system("wireshark") ###miss
-
+##########################################################################################################
 
 #Fonction pour ping une IP
 def ping_utility():
-
-    #Importation des dépendances
-    import os
 
     #On demande l'ip à ping
     ip_to_check=input("Veuillez saisir l'adresse IP à ping : ")
@@ -121,15 +123,19 @@ def ping_utility():
     #On initialise le ping dans une variable
     response = os.system("ping -c 1 " + ip_to_check)
 
-    #Si cette variable renvoi 0 (pour ok) on affiche un message de succès
+    #Si cette variable renvoi 0 (ok), on stock "Ping ok" dans une variable
     if response == 0:
         pingstatus = "Ping OK"
 
-    #Sinon on affiche une erreur de ping
+    #Sinon on stock "Pas de ping" dans une variable
     else:
         pingstatus = "Pas de ping"
 
+    #On affiche le resultat de la variable
     print("-" * 50) 
     print (pingstatus)
     print("-" * 50)
-    
+
+    #On met un delai de 3 secondes avant d'afficher le menu à la fin de la fonction
+    time.sleep(3)
+    display_menu.menu()

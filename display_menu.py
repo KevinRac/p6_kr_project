@@ -1,6 +1,4 @@
-# Importation des fonctions
-from display_menu import *
-from login_function import *
+# Importation des dépendances
 from network_function import *
 from script_function import *
 
@@ -10,7 +8,7 @@ def menu():
     #Variable contenant le choix du 1er menu
     choix = display_menu()
 
-    # Si l'utilisateur saisit 1, on affiche le menu "réseau"
+    # Si l'utilisateur saisit 1, on affiche le sous-menu "réseau" via display_menu_reseau()
     if int(choix) == 1:
 
         #Variable contenant le choix du menu
@@ -28,79 +26,55 @@ def menu():
         elif int(choix_reseau) == 3:
             connexion_ssh_utility()
 
-        # Si l'utilisateur saisit 4, on lance la fonction wireshark_utility()  
+        # Si l'utilisateur saisit 4, on lance la fonction ping_utility()
         elif int(choix_reseau) == 4:
-            wireshark_utility()
-
-        # Si l'utilisateur saisit 5, on lance la fonction ping_utility()
-        elif int(choix_reseau) == 5:
             ping_utility()
             
-        # Si l'utilisateur saisit 9, on revient au menu "réseau"
+        # Si l'utilisateur saisit 9, on revient au menu principal
         elif int(choix_reseau) == 9:
             menu()
 
-        # Si l'utilisateur saisit un nombre non défini, on renvoi un message d'avertissement
+        # Si l'utilisateur saisit un choix non défini, on renvoi un message d'avertissement et on le renvoi au menu
         else:
             print("Choix non défini")
-
-    #Si l'utilisateur saisit 2, on affiche le menu "script de deploiement"   
-    elif int(choix) == 2:
-        display_menu_script()
-
-        #Variable contenant le choix du menu
-        choix_script = display_menu_script()
-
-        # Si l'utilisateur saisit 1, on lance la fonction script_linux()
-        if int(choix_script) == 1:
-            script_linux()
-
-        # Si l'utilisateur saisit 2, on lance la fonction script_windows()   
-        elif int(choix_script) == 2:
-            script_windows()
-
-        # Si l'utilisateur saisit 9, on revient au menu "script de deploiement"    
-        elif int(choix_script) == 9:
             menu()
 
-        # Si l'utilisateur saisit un nombre non défini, on renvoi un message d'avertissement
-        else:
-            print("Choix non défini")
+    #Si l'utilisateur saisit 2, on lance le script de deploiement linux via la fonction script_linux() 
+    elif int(choix) == 2:
+        script_linux()
             
-    # Si l'utilisateur saisit un nombre non défini dans le menu principal, on renvoi un message d'avertissement      
+    # Si l'utilisateur saisit un nombre non défini dans le menu principal, on renvoi un message d'avertissement et on affiche à nouveau le menu     
     else:
-            print("Choix non défini")
+        print("Choix non défini")
+        menu()
 
 
-#Fonction d'affichage du 1er menu après le login
+#Fonction d'affichage du menu principal après le login
 def display_menu():
-    
+
+    #On affiche les différents choix possibles
+    print("---------------")
     print("1 - Reseau")
     print("2 - Script de déploiement")
     print("9 - Quitter")
-    
-    saisie_menu=input("Merci de saisir la fonction voulue en saisissant le chiffre : ")
+    print("            ")
+
+    #On demande le choix de l'utilisateur et on le stocke dans une variable qui va être retournée à la fonction menu()
+    saisie_menu=input("Merci de saisir votre choix en saisissant le chiffre situé devant la fonction : ")
     return saisie_menu
 
-#Fonction d'affichage du menu "réseau"
+#Fonction d'affichage du sous-menu "réseau"
 def display_menu_reseau():
-    
+
+    #On affiche les différents choix possibles
+    print("---------------")
     print("1 - Utilitaire de scan réseau")
     print("2 - Utilitaire de scan des ports")
     print("3 - Connexion SSH")
-    print("4 - Wireshark")
-    print("5 - Ping")
+    print("4 - Ping")
     print("9 - Retour")
-    
+    print("            ")
+
+    #On demande le choix de l'utilisateur et on le stocke dans une variable qui va être retournée à la fonction menu()
     saisie_menu_reseau=input("Veuillez selectionner l'utilitaire voulu en saisissant le chiffre : ")
     return saisie_menu_reseau
-
-#Fonction d'affichage du menu "script de deploiement"
-def display_menu_script():
-
-    print("1 - Script d'installation Linux")
-    print("2 - Script d'installation Windows")
-    print("9 - Retour")
-    
-    saisie_menu_script=input("Veuillez selectionner l'utilitaire voulu en saisissant le chiffre : ")
-    return saisie_menu_script
