@@ -1,3 +1,5 @@
+#!/usr/bin python3
+
 #Importation des dépendances
 import display_menu
 import time
@@ -36,8 +38,11 @@ def scan_network_utility():
             #On défini la variable contenant les 3 premiers octets et on y incrémente la variable ping allant de 1 à 254
             address = monipexplode + str(ping)
 
-            #On effectue le test avec la commande ping
-            res = subprocess.call(['ping', '-c', '3', address])
+            
+
+            #On effectue le test avec la commande ping et on envoi la sortie vers NULL (supprime l'affichage des lignes de commandes)
+            FNULL = open(os.devnull, 'w')
+            res = subprocess.call(['ping', '-c', '3', address],stdout=FNULL, stderr=subprocess.STDOUT)
 
             #Si la fonction trouve une IP (0=ok), on l'affiche ainsi que son nom d'hôte
             if res == 0:
@@ -104,6 +109,7 @@ def connexion_ssh_utility():
 
     #On affiche un message d'avertissement à l'utilisateur en mettant 3 seconde de délai
     print("Vous allez basculer vers le terminal, merci de saisir le mot de passe et de saisir vos commandes en ssh")
+    print("Si le nouveau terminal ne s'ouvre pas après 3 secondes, l'identifiant ou l'adresse IP n'est pas correct")
     time.sleep(3)
     
     #On lance un terminal en ajoutant la commande ssh utilissateur@ip
