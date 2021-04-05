@@ -19,3 +19,7 @@ Ce script Python permet de :
  - (choix 1 puis 4)       Effectuer un ping vers une adresse IP spécifiée      ->   [Saisir l'adresse IP du PC à ping]                            [Indique l'état du ping]
 
  - (choix 2 puis 1)       Lancer un script d'installation de PC Client Linux   ->   [Demande de confirmation]                                     [Execution du script et renvoi les commandes effectuées]
+
+***********Notes DEV************
+
+ - Chaque ligne de code est commentée pour comprendre son fonctionnement
