@@ -1,11 +1,15 @@
 ****************************************
   Script d'automatisation des taches  
 ****************************************
+***********Prérequis**************
+
+  - OS : Linux
+  - Installer Python3
 
 **********Fonctionnement**********
 
  - Copier l'ensemble des fichiers dans un dossier de l'ordinateur
- - Executer le fichier main.py en effectuant un ./main.py depuis un interpreteur de commande
+ - Executer le fichier main.py en effectuant un "python3 main.py" depuis un interpreteur de commande
  - Le mot de passe demandé est noté dans les fichiers. Celui-ci à pour but de proteger le programme contre d'eventuels utilisateurs non informés ayant trouvé ce programme.
 
 **********Utilitaires*************
